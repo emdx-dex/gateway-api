@@ -7,7 +7,7 @@ import PerpetualFinance from '../services/perpetual_finance';
 const router = express.Router();
 const globalConfig =
   require('../services/configuration_manager').configManagerInstance;
-const perpFi = new PerpetualFinance(globalConfig.getConfig('ETHEREUM_CHAIN'));
+const perpFi = new PerpetualFinance(globalConfig.getConfig('avalanche'));
 setTimeout(perpFi.update_price_loop.bind(perpFi), 2000);
 
 router.get('/', async (req, res) => {

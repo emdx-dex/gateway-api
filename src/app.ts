@@ -2,8 +2,8 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import helmet from 'helmet';
 import { statusMessages } from './services/utils';
-import { validateAccess } from './services/access';
-import { IpFilter } from 'express-ipfilter';
+// import { validateAccess } from './services/access';
+// import { IpFilter } from 'express-ipfilter';
 import { logger } from './services/logger';
 
 const winston = require('winston');
@@ -11,16 +11,16 @@ const expressWinston = require('express-winston');
 
 // routes
 import apiRoutes from './routes/index.route';
-import balancerRoutes from './routes/balancer.route';
-import ethRoutes from './routes/ethereum';
+// import balancerRoutes from './routes/balancer.route';
+// import ethRoutes from './routes/ethereum';
 import perpFiRoutes from './routes/perpetual_finance.route';
-import terraRoutes from './routes/terra';
-import uniswapRoutes from './routes/uniswap';
-import uniswapV3Routes from './routes/uniswap_v3';
+// import terraRoutes from './routes/terra';
+// import uniswapRoutes from './routes/uniswap';
+// import uniswapV3Routes from './routes/uniswap_v3';
 
 // load configs
-const globalConfig =
-  require('./services/configuration_manager').configManagerInstance;
+// const globalConfig =
+//   require('./services/configuration_manager').configManagerInstance;
 
 // create app
 const app = express();
@@ -30,14 +30,14 @@ const app = express();
 // https://www.npmjs.com/package/helmet
 app.use(helmet());
 
-const ipWhitelist = globalConfig.getCoreConfig('IP_WHITELIST');
-if (ipWhitelist) {
-  app.use(IpFilter(JSON.parse(ipWhitelist), { mode: 'allow' }));
-}
+// const ipWhitelist = globalConfig.getCoreConfig('IP_WHITELIST');
+// if (ipWhitelist) {
+//   app.use(IpFilter(JSON.parse(ipWhitelist), { mode: 'allow' }));
+// }
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(validateAccess);
+// app.use(validateAccess);
 
 // set up logging for all API queries
 app.use(
@@ -59,11 +59,11 @@ app.use(
 
 // mount routes to specific path
 app.use('/api', apiRoutes);
-app.use('/eth', ethRoutes);
-app.use('/eth/uniswap', uniswapRoutes);
-app.use('/eth/uniswap/v3', uniswapV3Routes);
-app.use('/eth/balancer', balancerRoutes);
-app.use('/terra', terraRoutes);
+// app.use('/eth', ethRoutes);
+// app.use('/eth/uniswap', uniswapRoutes);
+// app.use('/eth/uniswap/v3', uniswapV3Routes);
+// app.use('/eth/balancer', balancerRoutes);
+// app.use('/terra', terraRoutes);
 app.use('/perpfi', perpFiRoutes);
 
 // a simple, pingable route

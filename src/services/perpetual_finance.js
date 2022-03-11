@@ -13,58 +13,43 @@ const globalConfig =
 const GAS_LIMIT = 2123456;
 const DEFAULT_DECIMALS = 18;
 const CONTRACT_ADDRESSES = 'https://metadata.perp.exchange/';
-const XDAI_PROVIDER =
-  globalConfig.getConfig('XDAI_PROVIDER') || 'https://dai.poa.network';
 const PNL_OPTION_SPOT_PRICE = 0;
 const UPDATE_PERIOD = 60000; // stop updating prices after 30 secs from last request
+const AVALANCHE_PROVIDER = globalConfig.getConfig('AVALANCHE_PROVIDER');
+
+const stagingContracts = require('../../data/staging.json');
 
 export default class PerpetualFinance {
-  constructor(network = 'mainnet') {
-    this.providerUrl = XDAI_PROVIDER;
+  constructor(network = 'avalanche') {
+    this.providerUrl = AVALANCHE_PROVIDER;
     this.network = network;
-    this.provider = new Ethers.providers.JsonRpcProvider(this.providerUrl);
+
+    // TODO: CHECK WHY THIS DONT WORK AVALANCHE_PROVIDER
+
+    this.provider = new Ethers.providers.JsonRpcProvider(
+      'https://api.avax-test.network/ext/bc/C/rpc'
+    );
     this.gasLimit = GAS_LIMIT;
-    this.contractAddressesUrl = CONTRACT_ADDRESSES;
+    this.contracts = stagingContracts;
+
     this.amm = {};
     this.priceCache = {};
     this.cacheExpirary = {};
     this.pairAmountCache = {};
 
-    switch (network) {
-      case 'mainnet':
-        this.contractAddressesUrl += 'production.json';
-        break;
-      case 'kovan':
-        this.contractAddressesUrl += 'staging.json';
-        break;
-      default: {
-        const err = `Invalid network ${network}`;
-        logger.error(err);
-        throw Error(err);
-      }
-    }
+    // CONTRACT ADDRESSES
+    this.ClearingHouse = '0x1969d219542ac72612d6cA6438a216350E8d0f3d';
 
     this.loadedMetadata = this.load_metadata();
   }
 
   async load_metadata() {
     try {
-      const metadata = await fetch(this.contractAddressesUrl).then((res) =>
-        res.json()
-      );
-      const layer2 = Object.keys(metadata.layers.layer2.contracts);
+      this.contracts.amms.forEach(({ address, name }) => {
+        this.amm[name] = address;
+      });
 
-      for (var key of layer2) {
-        if (metadata.layers.layer2.contracts[key].name === 'Amm') {
-          this.amm[key] = metadata.layers.layer2.contracts[key].address;
-        } else {
-          this[key] = metadata.layers.layer2.contracts[key].address;
-        }
-      }
-
-      this.layer2AmbAddr =
-        metadata.layers.layer2.externalContracts.ambBridgeOnXDai;
-      this.xUsdcAddr = metadata.layers.layer2.externalContracts.usdc;
+      this.xUsdcAddr = this.contracts.collateral;
       this.loadedMetadata = true;
       return true;
     } catch (err) {
@@ -153,17 +138,23 @@ export default class PerpetualFinance {
   // get  allowance
   async getAllowance(wallet) {
     // instantiate a contract and pass in provider for read-only access
+
+    console.log(this.xUsdcAddr);
+
     const layer2Usdc = new Ethers.Contract(
       this.xUsdcAddr,
       TetherTokenArtifact.abi,
       wallet
     );
+    console.log('pasa ', this.ClearingHouse);
 
     try {
       const allowanceForClearingHouse = await layer2Usdc.allowance(
         wallet.address,
         this.ClearingHouse
       );
+
+      console.log('aca?');
 
       return Ethers.utils.formatUnits(
         allowanceForClearingHouse,

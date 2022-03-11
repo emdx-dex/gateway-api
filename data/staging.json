@@ -1,0 +1,25 @@
+{
+  "amms": [
+    {
+      "name": "ars/usdc",
+      "address": "0x27D47fa25dC0FD9aCfa76F36c06Eb6940C220B2E"
+    },
+    {
+      "name": "avax/usdc",
+      "address": "0xF888213c6430B096468abd456840A0bEf2b9D242"
+    },
+    {
+      "name": "btc/usdc",
+      "address": "0x08C3069541913775A246e9e5db3ecFA13763BB68"
+    },
+    {
+      "name": "eth/usdc",
+      "address": "0x0C89d87f8781bFB96ceA3456b5F7C2C9684a0726"
+    },
+    {
+      "name": "xava/usdc",
+      "address": "0x7322f93d502F914c7B7360CF8d1889f7416749c8"
+    }
+  ],
+  "collateral": "0x0f2A5D18aD37395266c0b59e3dfCFe790a0EE8E1"
+}

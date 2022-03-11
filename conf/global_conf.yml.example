@@ -76,3 +76,6 @@ ETH_MANUAL_GAS_PRICE: 100
 # Perpetual Finance Provider URL
 # default:  https://dai.poa.network , https://rpc.xdaichain.com, etc
 XDAI_PROVIDER:
+
+# Avalanche
+AVALANCHE_PROVIDER: https://api.avax-test.network/ext/bc/C/rpc
