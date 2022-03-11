@@ -17,10 +17,11 @@ const PNL_OPTION_SPOT_PRICE = 0;
 const UPDATE_PERIOD = 60000; // stop updating prices after 30 secs from last request
 const AVALANCHE_PROVIDER = globalConfig.getConfig('AVALANCHE_PROVIDER');
 
+const developmentContracts = require('../../data/development.json');
 const stagingContracts = require('../../data/staging.json');
 
 export default class PerpetualFinance {
-  constructor(network = 'avalanche') {
+  constructor(network = 'staging') {
     this.providerUrl = AVALANCHE_PROVIDER;
     this.network = network;
 
@@ -30,15 +31,13 @@ export default class PerpetualFinance {
       'https://api.avax-test.network/ext/bc/C/rpc'
     );
     this.gasLimit = GAS_LIMIT;
-    this.contracts = stagingContracts;
+    this.contracts =
+      network === 'staging' ? stagingContracts : developmentContracts;
 
     this.amm = {};
     this.priceCache = {};
     this.cacheExpirary = {};
     this.pairAmountCache = {};
-
-    // CONTRACT ADDRESSES
-    this.ClearingHouse = '0x1969d219542ac72612d6cA6438a216350E8d0f3d';
 
     this.loadedMetadata = this.load_metadata();
   }
@@ -49,6 +48,7 @@ export default class PerpetualFinance {
         this.amm[name] = address;
       });
 
+      this.ClearingHouse = this.contracts.clearingHouse;
       this.xUsdcAddr = this.contracts.collateral;
       this.loadedMetadata = true;
       return true;
@@ -138,23 +138,17 @@ export default class PerpetualFinance {
   // get  allowance
   async getAllowance(wallet) {
     // instantiate a contract and pass in provider for read-only access
-
-    console.log(this.xUsdcAddr);
-
     const layer2Usdc = new Ethers.Contract(
       this.xUsdcAddr,
       TetherTokenArtifact.abi,
       wallet
     );
-    console.log('pasa ', this.ClearingHouse);
 
     try {
       const allowanceForClearingHouse = await layer2Usdc.allowance(
         wallet.address,
         this.ClearingHouse
       );
-
-      console.log('aca?');
 
       return Ethers.utils.formatUnits(
         allowanceForClearingHouse,

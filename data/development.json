@@ -1,0 +1,30 @@
+{
+  "amms": [
+    {
+      "symbol": "ars/usdt",
+      "address": "0xED8CEf09410C17D7713b72e83B6E21B030138522"
+    },
+    {
+      "symbol": "avax/usdt",
+      "address": "0xA4330ef7e184B8862Bc4c13Fa1b70a7Ccb0260fD"
+    },
+    {
+      "symbol": "btc/usdt",
+      "address": "0xB640036Ed6Ec25ae96309ba6a6802C1907326D8e"
+    },
+    {
+      "symbol": "eth/usdt",
+      "address": "0xC96f196BB95e2e482f90411eA788aA626FCD57D7"
+    },
+    {
+      "symbol": "link/usdt",
+      "address": "0xC7F4E9C86f8A233eb27432e21aB03E3102e9131B"
+    },
+    {
+      "symbol": "xava/usdt",
+      "address": "0x55484D4A721Eb0314703c2B0e029Aa0C60Cb2c47"
+    }
+  ],
+  "clearingHouse": "0xAFDa926d549a67229D8DB529638E0BAFCDb66458",
+  "collateral": "0x0f2A5D18aD37395266c0b59e3dfCFe790a0EE8E1"
+}
